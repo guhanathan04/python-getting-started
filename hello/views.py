@@ -6,6 +6,8 @@ import re
 from gingerit.gingerit import GingerIt
 from .models import Greeting
 from django.http import JsonResponse
+from termcolor import colored
+
 
 # Create your views here.
 def index(request):
@@ -15,21 +17,21 @@ def index(request):
 
     # initializing test string
     test_string = "Gu;ha*n: @ s=r$ira*m pl+ey:s; cr*ic%ke=^t_~💕👭  andu B$o🙈th o%f t*ha_m a~r`e g+o=u#d f<r/ie*_d~😂s."
-
+    given = test_string
     # printing original string
     #print ("Original String : " + test_string)
 
     # using replace() to
     # remove unwanted_chars
     for i in unwanted_chars :
-        test_string = test_string.replace(i, '')
+        given = given.replace(i, '')
         for j in replace_chars:
-             test_string = test_string.replace(j, 'and')
+             given = given.replace(j, 'and')
     #After Punctuation and replace
     #print("\nAfter Removing Special Charcaters : ",test_string)
 
     #For emoji removal
-    p=emoji.get_emoji_regexp().sub(r'', test_string)
+    p=emoji.get_emoji_regexp().sub(r'', given)
     #print("\nAfter Emoji Removal : ",p)
 
 
@@ -46,12 +48,14 @@ def index(request):
 
     d1=list(set(k.split(' ')) ^ set(resultt.split(' ')))
 
-    from termcolor import colored
     results= " ".join(colored(t,'white','on_red') if t in d1 else t for t in k.split())
+    
     print("\nMistake Highlighted sentence:",results)
     print("\nThe correct sentence:",resultt)
-    context={"Mistake Sentence":results,"Correct Sentence":resultt}
-    return JsonResponse(context)
+   
+    context={"Mistake_Sentence":results,"Correct_Sentence":resultt}
+    return JsonResponse(context,status=200)
+    #return render(request, "new.html",context)
 
 def db(request):
 

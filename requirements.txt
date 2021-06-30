@@ -3,3 +3,4 @@ gunicorn
 django-heroku
 emoji==1.2.0
 gingerit==0.8.1
+termcolor==1.1.0

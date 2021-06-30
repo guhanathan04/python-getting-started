@@ -1,3 +1,5 @@
 django
 gunicorn
 django-heroku
+emoji==1.2.0
+gingerit==0.8.1

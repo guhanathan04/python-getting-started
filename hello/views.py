@@ -52,8 +52,6 @@ def index(request):
     print("\nThe correct sentence:",resultt)
     context={"Mistake Sentence":results,"Correct Sentence":resultt}
     return JsonResponse(context)
-    #return render(request, "index.html")
-
 
 def db(request):
 

@@ -2,13 +2,11 @@ from django.shortcuts import render
 from django.http import HttpResponse
 import emoji
 import itertools
-
 import re
 from gingerit.gingerit import GingerIt
 from .models import Greeting
 from django.http import JsonResponse
-import json
-from sklearn.externals import *
+
 
 
 # Create your views here.

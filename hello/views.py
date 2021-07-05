@@ -3,25 +3,30 @@ from django.http import HttpResponse
 import emoji
 import itertools
 import re
+from django.views.decorators.csrf import csrf_exempt
 from gingerit.gingerit import GingerIt
 from .models import Greeting
 from django.http import JsonResponse
+from better_profanity import profanity
 
 
 
 # Create your views here.
+@csrf_exempt
 def index(request):
-    unwanted_chars = [';', ':', "*",'/','$','#','=','+','%','^','_','~',"`",'<',">"]
-    replace_chars=['@','&']
-    
-    if request.method == 'POST':
+   
+    if request.method == 'GET':
         # initializing test string
-        test_string = request.POST.get('text')
+        
+        text = request.GET.get('text', '')
+        #test_string = request.POST.get('text',)
         #test_string = "Gu;ha*n: @ s=r$ira*m pl+ey:s; cr*ic%ke=^t_~💕👭  andu B$o🙈th o%f t*ha_m a~r`e g+o=u#d f<r/ie*_d~😂s."
-        given = test_string
+        given = text
+        unwanted_chars = [';', ':', "*",'/','$','#','=','+','%','^','_','~',"`",'<',">"]
+        replace_chars=['@','&']
         # printing original string
         #print ("Original String : " + test_string)
-
+        
         # using replace() to
         # remove unwanted_chars
         for i in unwanted_chars :
@@ -54,16 +59,32 @@ def index(request):
         
         print("\nMistake Highlighted sentence:",results)
         print("\nThe correct sentence:",resultt)
+        
+
+        #replacing profanity words to #
+        censored_text = profanity.censor(resultt,'#')
+        #print(censored_text)
+
+        d2=list(set(resultt.split(' ')) ^ set(censored_text.split(' ')))
+        
+        bad_words= " ".join(("$$"+f+"##") if f in d2 else f for f in resultt.split())
+        print("\Bad Words Highlighted sentence:",censored_text)
+        print("\nThe Bad word sentence:",bad_words)
+
+        #checking profanity words
+        check=profanity.contains_profanity(resultt)
+
         if c['text'] == c['result']:
             flag="False"
         else:
             flag = "True"
         
-        context={"status":"Success","flag":flag,"original_text":test_string,"Wrong_Text":results,"corrected_text":resultt}
+        context={"status":"Success","flag":flag,"original_text":text,"Wrong_Text":results,"corrected_text":resultt,"Bad_words_Highlighted":bad_words,"Profanity_Word":check}
     
         return JsonResponse(context)
+  
         #return render(request, "new.html",context)
-    return render(request,"form.html")
+    #return render(request,"form.html")
 
 def db(request):
 
